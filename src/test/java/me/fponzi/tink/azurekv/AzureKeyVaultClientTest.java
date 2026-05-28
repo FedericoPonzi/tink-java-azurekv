@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThrows;
 import com.azure.core.credential.AccessToken;
 import com.azure.core.credential.TokenCredential;
 import com.google.crypto.tink.KmsClient;
+import com.google.crypto.tink.KmsClients;
 import java.security.GeneralSecurityException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,5 +96,11 @@ public class AzureKeyVaultClientTest {
   public void getAead_returnsAead() throws Exception {
     KmsClient client = AzureKeyVaultClient.create(FAKE_CREDENTIAL, KEY_URI);
     assertThat(client.getAead(KEY_URI)).isNotNull();
+  }
+
+  @Test
+  public void register_addsClientToRegistry() throws Exception {
+    AzureKeyVaultClient.register(KEY_URI, FAKE_CREDENTIAL);
+    assertThat(KmsClients.get(KEY_URI)).isNotNull();
   }
 }

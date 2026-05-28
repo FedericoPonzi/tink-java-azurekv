@@ -19,6 +19,7 @@ import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.security.keyvault.keys.cryptography.CryptographyClientBuilder;
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.KmsClient;
+import com.google.crypto.tink.KmsClients;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
@@ -58,6 +59,18 @@ public final class AzureKeyVaultClient implements KmsClient {
   /** Constructs a client bound to a single key identified by {@code keyUri}. */
   public static KmsClient create(TokenCredential credential, String keyUri) {
     return new AzureKeyVaultClient(credential, keyUri);
+  }
+
+  /**
+   * Creates a client and registers it with Tink's {@link KmsClients} registry, so that a {@code
+   * KmsClient} can be looked up automatically (for example by {@code KmsClients.get(keyUri)} when
+   * building an envelope AEAD).
+   *
+   * @param keyUri the key URI to bind the client to, or {@code null} to register an unbound client
+   * @param credential the Azure credential to authenticate with
+   */
+  public static void register(@Nullable String keyUri, TokenCredential credential) {
+    KmsClients.add(new AzureKeyVaultClient(credential, keyUri));
   }
 
   @Override
