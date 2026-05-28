@@ -81,6 +81,8 @@ Replace `<version>` with a released git tag (e.g. `v0.1.0`) or a commit hash. Se
 
 ## Usage
 
+The client gives you a Tink `Aead` backed by your Azure Key Vault key:
+
 ```java
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.google.crypto.tink.Aead;
@@ -97,6 +99,43 @@ Aead aead = client.getAead(keyUri);
 
 byte[] ciphertext = aead.encrypt("secret".getBytes(), "context".getBytes());
 byte[] plaintext = aead.decrypt(ciphertext, "context".getBytes());
+```
+
+### Envelope encryption (recommended)
+
+Each `encrypt`/`decrypt` call is a remote request to Azure and is subject to Key Vault payload
+size limits, so the remote AEAD is best used as a **key-encryption key (KEK)** that wraps a local
+Tink keyset. This is the canonical Tink pattern: a locally generated data-encryption key (DEK)
+does the bulk encryption, and the KEK only protects the (small) DEK.
+
+```java
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.aead.AeadConfig;
+import com.google.crypto.tink.aead.KmsEnvelopeAead;
+import com.google.crypto.tink.aead.PredefinedAeadParameters;
+import me.fponzi.tink.azurekv.AzureKeyVaultClient;
+
+AeadConfig.register();
+
+String keyUri =
+    "azure-kv://myhsm.managedhsm.azure.net/keys/mykey/00112233445566778899aabbccddeeff";
+
+Aead kek =
+    AzureKeyVaultClient.create(new DefaultAzureCredentialBuilder().build(), keyUri).getAead(keyUri);
+
+// DEKs are AES-256-GCM, generated locally per message; only the DEK is sent to Azure to be wrapped.
+Aead aead = KmsEnvelopeAead.create(PredefinedAeadParameters.AES256_GCM, kek);
+
+byte[] ciphertext = aead.encrypt("a large payload".getBytes(), "context".getBytes());
+byte[] plaintext = aead.decrypt(ciphertext, "context".getBytes());
+```
+
+You can also register the client with Tink's `KmsClients` registry instead of holding a reference:
+
+```java
+AzureKeyVaultClient.register(keyUri, new DefaultAzureCredentialBuilder().build());
+Aead kek = com.google.crypto.tink.KmsClients.get(keyUri).getAead(keyUri);
 ```
 
 ## Building
