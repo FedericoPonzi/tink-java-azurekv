@@ -23,5 +23,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authenticated ciphertext framing (`version || ivLen || iv || tagLen || tag || ciphertext`).
 - Gradle (Kotlin DSL) build, JitPack distribution, CI and tag-based release workflows.
 
-[Unreleased]: https://github.com/FedericoPonzi/tink-java-azurekv/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/FedericoPonzi/tink-java-azurekv/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/FedericoPonzi/tink-java-azurekv/releases/tag/v0.1.0
