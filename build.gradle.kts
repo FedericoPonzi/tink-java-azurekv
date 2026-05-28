@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    api("com.google.crypto.tink:tink:1.15.0")
+    api("com.google.crypto.tink:tink:1.21.0")
 
     api(platform("com.azure:azure-sdk-bom:1.2.31"))
     // TokenCredential (azure-core, pulled in transitively) appears in the public API of
