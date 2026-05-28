@@ -112,6 +112,17 @@ public class AzureKeyVaultAeadTest {
   }
 
   @Test
+  public void decryptModifiedCiphertextBody_fails() throws Exception {
+    Aead aead = AzureKeyVaultAead.create(new FakeAzureKeyVault());
+    byte[] ciphertext = aead.encrypt("hello azure".getBytes(), new byte[0]);
+    // Flip a bit in the last byte, which lies in the ciphertext body, and expect the
+    // underlying authenticated decryption to reject it.
+    ciphertext[ciphertext.length - 1] ^= 0x01;
+
+    assertThrows(GeneralSecurityException.class, () -> aead.decrypt(ciphertext, new byte[0]));
+  }
+
+  @Test
   public void decryptWrongVersionByte_fails() throws Exception {
     Aead aead = AzureKeyVaultAead.create(new FakeAzureKeyVault());
     byte[] ciphertext = aead.encrypt("hi".getBytes(), new byte[0]);
