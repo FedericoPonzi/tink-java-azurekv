@@ -72,6 +72,20 @@ public class AzureKeyVaultClientTest {
         GeneralSecurityException.class, () -> AzureKeyVaultClient.getKeyIdentifier("https://x"));
     assertThrows(
         GeneralSecurityException.class, () -> AzureKeyVaultClient.getKeyIdentifier("azure-kv://"));
+    // Host present but missing the /keys/<name> path.
+    assertThrows(
+        GeneralSecurityException.class,
+        () -> AzureKeyVaultClient.getKeyIdentifier("azure-kv://myhsm.managedhsm.azure.net"));
+    assertThrows(
+        GeneralSecurityException.class,
+        () -> AzureKeyVaultClient.getKeyIdentifier("azure-kv://myhsm.managedhsm.azure.net/keys/"));
+  }
+
+  @Test
+  public void getKeyIdentifier_validWithoutVersion() throws Exception {
+    assertThat(
+            AzureKeyVaultClient.getKeyIdentifier("azure-kv://myhsm.managedhsm.azure.net/keys/mykey"))
+        .isEqualTo("https://myhsm.managedhsm.azure.net/keys/mykey");
   }
 
   @Test

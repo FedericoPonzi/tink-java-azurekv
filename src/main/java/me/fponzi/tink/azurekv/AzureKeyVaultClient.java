@@ -23,6 +23,7 @@ import com.google.crypto.tink.KmsClients;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.security.GeneralSecurityException;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /**
@@ -39,6 +40,12 @@ import javax.annotation.Nullable;
  */
 public final class AzureKeyVaultClient implements KmsClient {
   public static final String PREFIX = "azure-kv://";
+
+  /**
+   * Matches the key-identifier portion of a URI (after {@link #PREFIX}): {@code
+   * <host>/keys/<name>} with an optional {@code /<version>} suffix.
+   */
+  private static final Pattern KEY_URI_PATTERN = Pattern.compile("[^/]+/keys/[^/]+(?:/[^/]+)?");
 
   @Nullable private final TokenCredential credential;
   @Nullable private final String keyUri;
@@ -101,8 +108,9 @@ public final class AzureKeyVaultClient implements KmsClient {
       throw new GeneralSecurityException("key URI must start with " + PREFIX);
     }
     String rest = uri.substring(PREFIX.length());
-    if (rest.isEmpty()) {
-      throw new GeneralSecurityException("malformed key URI: " + uri);
+    if (!KEY_URI_PATTERN.matcher(rest).matches()) {
+      throw new GeneralSecurityException(
+          "malformed key URI; expected " + PREFIX + "<host>/keys/<name>[/<version>] but got " + uri);
     }
     return "https://" + rest;
   }
