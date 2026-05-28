@@ -31,8 +31,10 @@ import javax.annotation.Nullable;
  * <p>Encryption uses AES-256-GCM ({@code A256GCM}), which is authenticated and supports associated
  * data. The bound key must therefore be a symmetric AES key (e.g. on an Azure Managed HSM).
  *
- * <p>Key URIs have the form {@code azure-kv://<vault>.vault.azure.net/keys/<name>/<version>}, which
- * mirrors the Azure key identifier with the {@code https} scheme replaced by {@link #PREFIX}.
+ * <p>Key URIs have the form {@code
+ * azure-kv://<hsm>.managedhsm.azure.net/keys/<name>/<version>}, which mirrors the Azure key
+ * identifier with the {@code https} scheme replaced by {@link #PREFIX}. The {@code <version>} is
+ * optional. A256GCM requires a symmetric AES key, which is only available on Azure Managed HSM.
  */
 public final class AzureKeyVaultClient implements KmsClient {
   public static final String PREFIX = "azure-kv://";

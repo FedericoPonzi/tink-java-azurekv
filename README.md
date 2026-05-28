@@ -24,11 +24,23 @@ as `version || ivLen || iv || tagLen || tag || ciphertext`.
 
 ## Key URI format
 
+A key URI is the Azure key identifier with the `https` scheme replaced by `azure-kv://`. You pass
+the full `azure-kv://...` URI to `AzureKeyVaultClient.create(...)` / `client.getAead(uri)`; the
+library strips the prefix, prepends `https://`, and hands the resulting key identifier to the
+Azure SDK.
+
+Because AES keys (required for `A256GCM`) are only available on **Azure Managed HSM**, the host is
+the Managed HSM endpoint (`.managedhsm.azure.net`), not the standard vault (`.vault.azure.net`):
+
 ```
-azure-kv://<vault-name>.vault.azure.net/keys/<key-name>/<key-version>
+azure-kv://<hsm-name>.managedhsm.azure.net/keys/<key-name>/<key-version>
 ```
 
-This is the Azure key identifier with the `https` scheme replaced by `azure-kv://`.
+The `<key-version>` segment is optional; omit it to use the key's latest version:
+
+```
+azure-kv://<hsm-name>.managedhsm.azure.net/keys/<key-name>
+```
 
 ## Installation (JitPack)
 
@@ -76,7 +88,7 @@ import com.google.crypto.tink.KmsClient;
 import me.fponzi.tink.azurekv.AzureKeyVaultClient;
 
 String keyUri =
-    "azure-kv://myvault.vault.azure.net/keys/mykey/00112233445566778899aabbccddeeff";
+    "azure-kv://myhsm.managedhsm.azure.net/keys/mykey/00112233445566778899aabbccddeeff";
 
 KmsClient client =
     AzureKeyVaultClient.create(new DefaultAzureCredentialBuilder().build(), keyUri);

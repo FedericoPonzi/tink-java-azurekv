@@ -30,9 +30,9 @@ import reactor.core.publisher.Mono;
 @RunWith(JUnit4.class)
 public class AzureKeyVaultClientTest {
   private static final String KEY_URI =
-      "azure-kv://myvault.vault.azure.net/keys/mykey/00112233445566778899aabbccddeeff";
+      "azure-kv://myhsm.managedhsm.azure.net/keys/mykey/00112233445566778899aabbccddeeff";
   private static final String OTHER_KEY_URI =
-      "azure-kv://myvault.vault.azure.net/keys/otherkey/00112233445566778899aabbccddeeff";
+      "azure-kv://myhsm.managedhsm.azure.net/keys/otherkey/00112233445566778899aabbccddeeff";
 
   private static final TokenCredential FAKE_CREDENTIAL =
       (request) -> Mono.<AccessToken>empty();
@@ -62,7 +62,7 @@ public class AzureKeyVaultClientTest {
   public void getKeyIdentifier_valid() throws Exception {
     assertThat(AzureKeyVaultClient.getKeyIdentifier(KEY_URI))
         .isEqualTo(
-            "https://myvault.vault.azure.net/keys/mykey/00112233445566778899aabbccddeeff");
+            "https://myhsm.managedhsm.azure.net/keys/mykey/00112233445566778899aabbccddeeff");
   }
 
   @Test
