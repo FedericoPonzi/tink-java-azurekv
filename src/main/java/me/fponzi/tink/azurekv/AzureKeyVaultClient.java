@@ -58,12 +58,23 @@ public final class AzureKeyVaultClient implements KmsClient {
     this.keyUri = keyUri;
   }
 
-  /** Constructs a client that is not bound to a key URI. */
+  /**
+   * Constructs a client that is not bound to a key URI.
+   *
+   * @param credential the Azure credential to authenticate with
+   * @return a new {@link KmsClient} that supports any {@code azure-kv://} URI
+   */
   public static KmsClient create(TokenCredential credential) {
     return new AzureKeyVaultClient(credential, null);
   }
 
-  /** Constructs a client bound to a single key identified by {@code keyUri}. */
+  /**
+   * Constructs a client bound to a single key identified by {@code keyUri}.
+   *
+   * @param credential the Azure credential to authenticate with
+   * @param keyUri the {@code azure-kv://} key URI this client is bound to
+   * @return a new {@link KmsClient} that only supports {@code keyUri}
+   */
   public static KmsClient create(TokenCredential credential, String keyUri) {
     return new AzureKeyVaultClient(credential, keyUri);
   }
