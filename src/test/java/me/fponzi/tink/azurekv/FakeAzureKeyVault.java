@@ -41,7 +41,7 @@ final class FakeAzureKeyVault implements KeyVaultCrypto {
 
   FakeAzureKeyVault() throws GeneralSecurityException {
     this.aead =
-        KeysetHandle.generateNew(KeyTemplates.get("AES128_GCM"))
+        KeysetHandle.generateNew(KeyTemplates.get("AES256_GCM"))
             .getPrimitive(RegistryConfiguration.get(), Aead.class);
   }
 
