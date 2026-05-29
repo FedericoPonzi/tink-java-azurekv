@@ -3,6 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins {
     `java-library`
     `maven-publish`
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "com.github.FedericoPonzi"
@@ -18,6 +19,13 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+spotless {
+    java {
+        googleJavaFormat("1.22.0")
+        target("src/**/*.java")
+    }
 }
 
 dependencies {

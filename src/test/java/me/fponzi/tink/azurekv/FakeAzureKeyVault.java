@@ -55,7 +55,11 @@ final class FakeAzureKeyVault implements KeyVaultCrypto {
       throw new RuntimeException(e);
     }
     return new EncryptResult(
-        ciphertext, EncryptionAlgorithm.A256GCM, KEY_ID, Random.randBytes(12), Random.randBytes(16),
+        ciphertext,
+        EncryptionAlgorithm.A256GCM,
+        KEY_ID,
+        Random.randBytes(12),
+        Random.randBytes(16),
         aad);
   }
 

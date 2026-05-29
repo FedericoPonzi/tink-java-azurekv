@@ -33,17 +33,17 @@ import javax.annotation.Nullable;
  * <p>Encryption uses AES-256-GCM ({@code A256GCM}), which is authenticated and supports associated
  * data. The bound key must therefore be a symmetric AES key (e.g. on an Azure Managed HSM).
  *
- * <p>Key URIs have the form {@code
- * azure-kv://<hsm>.managedhsm.azure.net/keys/<name>/<version>}, which mirrors the Azure key
- * identifier with the {@code https} scheme replaced by {@link #PREFIX}. The {@code <version>} is
- * optional. A256GCM requires a symmetric AES key, which is only available on Azure Managed HSM.
+ * <p>Key URIs have the form {@code azure-kv://<hsm>.managedhsm.azure.net/keys/<name>/<version>},
+ * which mirrors the Azure key identifier with the {@code https} scheme replaced by {@link #PREFIX}.
+ * The {@code <version>} is optional. A256GCM requires a symmetric AES key, which is only available
+ * on Azure Managed HSM.
  */
 public final class AzureKeyVaultClient implements KmsClient {
   public static final String PREFIX = "azure-kv://";
 
   /**
-   * Matches the key-identifier portion of a URI (after {@link #PREFIX}): {@code
-   * <host>/keys/<name>} with an optional {@code /<version>} suffix.
+   * Matches the key-identifier portion of a URI (after {@link #PREFIX}): {@code <host>/keys/<name>}
+   * with an optional {@code /<version>} suffix.
    */
   private static final Pattern KEY_URI_PATTERN = Pattern.compile("[^/]+/keys/[^/]+(?:/[^/]+)?");
 
@@ -121,7 +121,10 @@ public final class AzureKeyVaultClient implements KmsClient {
     String rest = uri.substring(PREFIX.length());
     if (!KEY_URI_PATTERN.matcher(rest).matches()) {
       throw new GeneralSecurityException(
-          "malformed key URI; expected " + PREFIX + "<host>/keys/<name>[/<version>] but got " + uri);
+          "malformed key URI; expected "
+              + PREFIX
+              + "<host>/keys/<name>[/<version>] but got "
+              + uri);
     }
     return "https://" + rest;
   }

@@ -35,8 +35,7 @@ public class AzureKeyVaultClientTest {
   private static final String OTHER_KEY_URI =
       "azure-kv://myhsm.managedhsm.azure.net/keys/otherkey/00112233445566778899aabbccddeeff";
 
-  private static final TokenCredential FAKE_CREDENTIAL =
-      (request) -> Mono.<AccessToken>empty();
+  private static final TokenCredential FAKE_CREDENTIAL = (request) -> Mono.<AccessToken>empty();
 
   @Test
   public void doesSupport_unboundClient() throws Exception {
@@ -84,7 +83,8 @@ public class AzureKeyVaultClientTest {
   @Test
   public void getKeyIdentifier_validWithoutVersion() throws Exception {
     assertThat(
-            AzureKeyVaultClient.getKeyIdentifier("azure-kv://myhsm.managedhsm.azure.net/keys/mykey"))
+            AzureKeyVaultClient.getKeyIdentifier(
+                "azure-kv://myhsm.managedhsm.azure.net/keys/mykey"))
         .isEqualTo("https://myhsm.managedhsm.azure.net/keys/mykey");
   }
 

@@ -23,8 +23,8 @@ import java.util.Arrays;
 
 /**
  * An {@link Aead} that forwards encryption/decryption to a key in <a
- * href="https://learn.microsoft.com/azure/key-vault/">Azure Key Vault</a> using AES-256-GCM
- * ({@code A256GCM}).
+ * href="https://learn.microsoft.com/azure/key-vault/">Azure Key Vault</a> using AES-256-GCM ({@code
+ * A256GCM}).
  *
  * <p>AES-GCM is authenticated and supports associated data natively, so this is a true AEAD. The
  * returned ciphertext bundles the Key-Vault-generated IV and authentication tag so that {@link
